@@ -1,0 +1,174 @@
+<!-- template.html -->
+<html>
+  <head>
+    <title>React Beta</title>
+    <script src="http://fb.me/react-0.12.2.js"></script>
+    <script src="http://fb.me/JSXTransformer-0.12.2.js"></script>
+    <script src="http://code.jquery.com/jquery-1.10.0.min.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/showdown/0.3.1/showdown.min.js"></script>
+  </head>
+  <body>
+    <div id="content"></div>
+    <script type="text/jsx">
+    
+      // This is the JS Syntax
+      var CommentList = React.createClass({
+        render: function() {
+          var commentNodes = this.props.data.map(function (comment) {
+            return (
+              <Comment author={comment.author}>
+                {comment.text}
+              </Comment>
+              );
+          });
+          return (
+            <div className="commentList">
+              {commentNodes}
+            </div>
+          );
+        }
+      });
+
+//What is a DOMNode?
+      var CommentForm = React.createClass({
+        handleSubmit: function(e) {
+          e.preventDefault();
+          var author = this.refs.author.getDOMNode().value.trim();
+          var text = this.refs.text.getDOMNode().value.trim();
+          if (!text || !author) {
+            return;
+          }
+          // TODO: send request to the server
+          this.props.onCommentSubmit({author: author, text: text});
+          this.refs.author.getDOMNode().value = '';
+          this.refs.text.getDOMNode().value = '';
+          return;
+        },
+        render: function() {
+          return (
+            <form className="commentForm" onSubmit={this.handleSubmit}>
+              <input type="text" placeholder="Your name" ref="author" />
+              <input type="text" placeholder="Say something..." ref="text" />
+              <input type="submit" value="Post" />
+            </form>
+          );
+        }
+      });
+
+
+      var CommentBox = React.createClass({
+        loadCommentsFromServer: function() {
+          $.ajax({
+            url: this.props.url,
+            dataType: 'json',
+            success: function(data) {
+              this.setState({data: data});
+            }.bind(this),
+            error: function(xhr, status, err) {
+              console.error(this.props.url, status, err.toString());
+            }.bind(this)
+          });
+        },
+        handleCommentSubmit: function(comment) {
+          // TODO: submit to the server and refresh the list
+          var comments = this.state.data;
+          var newComments = comments.concat([comment]);
+          this.setState({data: newComments});
+          $.ajax({
+            url: this.props.url,
+            dataType: 'json',
+            type: 'POST',
+            data: comment,
+            success: function(data) {
+              this.setState({data: data});
+            }.bind(this),
+            error: function(xhr, status, err) {
+              console.error(this.props.url, status, err.toString());
+            }.bind(this)
+          });
+        },
+        getInitialState: function() {
+          return {data: []};
+        },
+        componentDidMount: function() {
+          this.loadCommentsFromServer();
+          setInterval(this.loadCommentsFromServer, this.props.pollInterval);
+        },
+        render: function() {
+          return (
+            <div className="commentBox">
+             <h1>Departments</h1>
+              <CommentList data={this.state.data} />
+              <CommentForm onCommentSubmit={this.handleCommentSubmit} />
+            </div>
+          );
+        }
+      });
+
+      //Just a simple onClick event that changes the name of some text
+      var LikeButton = React.createClass({
+        getInitialState: function() {
+          return {liked: false};
+        },
+        handleClick: function(event) {
+          this.setState({liked: !this.state.liked});
+        },
+        render: function() {
+          var text = this.state.liked ? 'like' : 'haven\'t liked';
+          return (
+            <p onClick={this.handleClick}>
+              You {text} this. Click to Toggle.
+            </p>
+          );
+        }
+      });
+
+
+      //Will later be used to display classes
+      var ClassList = React.createClass({
+        getInitialState: function() {
+          return {clicked: false};
+        },
+        handleClick: function(e) {
+          this.setState({clicked: !this.state.clicked});
+        },
+        render: function() {
+          var text = this.state.clicked ? 'are displaying' : 'are not displaying';
+          return (
+            <p onClick={this.handleClick}>
+              You {text} classes. Click to Display or nah.
+            </p>
+          );
+        }
+      });
+
+
+      var converter = new Showdown.converter();
+      var Comment = React.createClass({
+        render: function() {
+          var rawMarkup = converter.makeHtml(this.props.children.toString());
+          return (
+            <div className="comment">
+              <h2 className="commentAuthor">
+                {this.props.author}
+              </h2>
+              <span dangerouslySetInnerHTML={{__html: rawMarkup}} />
+              <LikeButton />
+              <ClassList />
+            </div>
+          );
+        }
+      });
+
+      React.render(
+        <CommentBox url="comments.json" pollInterval={20000}></CommentBox>, //PollInterval is how long the comment is displayed
+        document.getElementById('content')
+        );
+
+
+    </script>
+
+      <script src="js/info.js"></script>
+
+  </body>
+</html>

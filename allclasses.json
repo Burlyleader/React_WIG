@@ -1,0 +1,12 @@
+var department = [
+	{"title": "English", "departmentId":1, "id": 1, "courseIds": [295,296,143,293,222,145,146,146,146,386,384,211]},
+	{"title": "History", "departmentId":2, "id": 2, "courseIds": [54,302,156,301,94,159,160,160,160,218,219,220]},
+	{"title": "Math", "departmentId":3, "id": 3, "courseIds": [5,5,5,70,70,70,72,72,72]},
+	{"title": "Science", "departmentId":4, "id": 4, "courseIds": [1,1,1,66,66,66,162,162]},
+	{"title": "Spanish", "departmentId":5, "id": 5, "courseIds": [16,16,16,65,65,65]},
+	{"title": "Fine and Preforming Arts", "departmentId":6, "id": 6, "courseIds": [303,235,149,235,242,152,149,245]},
+	{"title": "P.E.", "departmentId":7, "id": 7, "courseIds": [463,308,463]},
+	{"title": "Electives", "departmentId":8, "id": 8, "courseIds": [396,424,311,423,495,502]},
+	{"title": "Other", "departmentId":9, "id": 9, "courseIds": []},
+	{"title": "Technology", "departmentId":10, "id": 10, "courseIds": [397,493,498,498,485]}
+];

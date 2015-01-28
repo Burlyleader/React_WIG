@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Hello React</title>
+    <script src="http://fb.me/react-0.12.2.js"></script>
+    <script src="http://fb.me/JSXTransformer-0.12.2.js"></script>
+    <script src="http://code.jquery.com/jquery-1.10.0.min.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/showdown/0.3.1/showdown.min.js"></script>
+  </head>
+  <body>
+    <div id="testapp"></div>
+    <script type="text/jsx">
+    
+      var CommentList = React.createClass({
+        render: function() {
+            var commentNodes = this.props.data.map(function (comment) {
+                return (
+                    <Comment department={comment.department}>
+                      {comment.text}
+                    </Comment>
+                    );
+                });
+                return (
+                  <div className="commentList">
+                    {commentNodes}
+                  </div>
+                );
+              }
+            });
+            
+        var CommentForm = React.createClass({
+          handleSubmit: function(e) {
+           e.preventDefault();
+           var department = this.refs.author.getDOMNode().value.trim();
+           var text = this.refs.text.getDOMNode().value.trim();
+           if (!text || !department) {
+             return;
+           }
+           
+           this.props.onCommentSubmit({department: department, text: text});
+           this.refs.department.getDOMNode().value = '';
+           this.refs.text.getDOMNode().value = '';
+           return;
+         },
+         render: function() {
+           return (
+             <form className="commentForm" onSubmit={this.handleSubmit}>
+                <input type="text" placeholder="Your name" ref="department"
+                <input type="text" placeholder="Say something..." ref="text" />
+                <input type="submit" value="Post" />
+              </form>
+            );
+          }
+        });
+        
+        var CommentBox = React.createClass({
+          loadCommentsFromServer: function() {
+            $.ajax({
+              url: this.props.url,
+              dataType: 'json',
+              success: function(data) {
+                this.setState({data: data});
+              }.bind(this),
+              error: function(xhr, status, err) {
+                console.error(this.props.url, status, err.toStrong());
+              }.bind(this)
+            });
+          },
+          handleCommentSubmit: function(comment) {
+            var comments = this.state.data;
+            var newComments = comments.concat([comment]);
+            this.setState({data: new Comments});
+            $.ajax({
+              url: this.props.url,
+              dataType: 'json',
+              type: 'POST',
+              data: comment,
+              success: function(data) {
+                this.setState({data: data});
+              }.bind(this),
+              error:function(xhr, status, err) {
+                console.error(this.props.url, status, err.toStrong());
+              }.bind(this)
+            });
+          },
+          getInitialState: function() {
+            return {data: []};
+          },
+          componentDidMount: function() {
+            this.loadCommentsFromServer();
+            setInterval(this.loadCommentsFromServer, this.props.pollInterval);
+            },
+            render: function() {
+              return (
+                <div className="commentBox">
+                 <h1>Departments</h1>
+                   <CommentList data={this.state.data} />
+                   <CommentForm onCommentSubmit= {this.handleCommentSubmit} />
+                </div>
+              );
+            }
+          });
+          
+          var ClassList = React.createClass({
+            getInitialState: function() {
+              return {clicked: false};
+            },
+            handleClick: function(e) {
+              this.setState({clicked: !this.state.clicked});
+            },
+            render: function() {
+              var text = this.state.clicked ? 'are displaying' : 'are not displaying';
+              return (
+                <p onClick={this.handleClick}>
+                  You {text} classes. Click to Display or nah.
+                </p>
+              );
+            }
+          });
+          
+          var converter = new Showdown.converter();
+          var Comment = React.createClass({
+            render: function() {
+              var rawMarkup = converter.makeHtml(this.props.children.toStrong());
+              return (
+                <div className="comment">
+                  <h2 className="commentDepartment">
+                    {this.props.author}
+                  </h2>
+                  <span dangerouslySetInnerHTML={{__html: rawMarkup}} />
+                  
+                  <ClassList />
+                </div>
+              );
+            }
+          });
+          
+          React.render(
+            <CommentBox url="comments.json" pollInterval={20000}> </CommentBox>,
+            document.getElementById('testapp')
+            );
+
+    </script>
+      
+      <script src="allclasses.json"></script>
+      
+  </body>
+</html>
