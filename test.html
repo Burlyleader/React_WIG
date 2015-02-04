@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Hello React</title>
+    <title>Stupid React Thing</title>
     <script src="http://fb.me/react-0.12.2.js"></script>
     <script src="http://fb.me/JSXTransformer-0.12.2.js"></script>
     <script src="http://code.jquery.com/jquery-1.10.0.min.js"></script>
@@ -11,12 +11,13 @@
     <div id="testapp"></div>
     <script type="text/jsx">
     
+    // comment.department was previously comment.text
       var CommentList = React.createClass({
         render: function() {
             var commentNodes = this.props.data.map(function (comment) {
                 return (
                     <Comment department={comment.department}>
-                      {comment.text}
+                      {comment.department}
                     </Comment>
                     );
                 });
@@ -31,7 +32,7 @@
         var CommentForm = React.createClass({
           handleSubmit: function(e) {
            e.preventDefault();
-           var department = this.refs.author.getDOMNode().value.trim();
+           var department = this.refs.department.getDOMNode().value.trim();
            var text = this.refs.text.getDOMNode().value.trim();
            if (!text || !department) {
              return;
@@ -45,7 +46,7 @@
          render: function() {
            return (
              <form className="commentForm" onSubmit={this.handleSubmit}>
-                <input type="text" placeholder="Your name" ref="department"
+                <input type="text" placeholder="Your name" ref="department" />
                 <input type="text" placeholder="Say something..." ref="text" />
                 <input type="submit" value="Post" />
               </form>
@@ -62,7 +63,7 @@
                 this.setState({data: data});
               }.bind(this),
               error: function(xhr, status, err) {
-                console.error(this.props.url, status, err.toStrong());
+                console.error(this.props.url, status, err.toString());
               }.bind(this)
             });
           },
@@ -79,7 +80,7 @@
                 this.setState({data: data});
               }.bind(this),
               error:function(xhr, status, err) {
-                console.error(this.props.url, status, err.toStrong());
+                console.error(this.props.url, status, err.toString());
               }.bind(this)
             });
           },
@@ -121,11 +122,11 @@
           var converter = new Showdown.converter();
           var Comment = React.createClass({
             render: function() {
-              var rawMarkup = converter.makeHtml(this.props.children.toStrong());
+              var rawMarkup = converter.makeHtml(this.props.children.toString());
               return (
-                <div className="comment">
-                  <h2 className="commentDepartment">
-                    {this.props.author}
+                <div className="section">
+                  <h2 className="sectionDepartment">
+                    {this.props.department}
                   </h2>
                   <span dangerouslySetInnerHTML={{__html: rawMarkup}} />
                   
@@ -134,15 +135,15 @@
               );
             }
           });
+
           
           React.render(
-            <CommentBox url="comments.json" pollInterval={20000}> </CommentBox>,
+            <CommentBox url="allclasses.json" pollInterval={20000}></CommentBox>,
             document.getElementById('testapp')
             );
 
     </script>
       
-      <script src="allclasses.json"></script>
       
   </body>
 </html>
