@@ -29,31 +29,7 @@
               }
             });
             
-        var CommentForm = React.createClass({
-          handleSubmit: function(e) {
-           e.preventDefault();
-           var department = this.refs.department.getDOMNode().value.trim();
-           var text = this.refs.text.getDOMNode().value.trim();
-           if (!text || !department) {
-             return;
-           }
-           
-           this.props.onCommentSubmit({department: department, text: text});
-           this.refs.department.getDOMNode().value = '';
-           this.refs.text.getDOMNode().value = '';
-           return;
-         },
-         render: function() {
-           return (
-             <form className="commentForm" onSubmit={this.handleSubmit}>
-                <input type="text" placeholder="Your name" ref="department" />
-                <input type="text" placeholder="Say something..." ref="text" />
-                <input type="submit" value="Post" />
-              </form>
-            );
-          }
-        });
-        
+
         var CommentBox = React.createClass({
           loadCommentsFromServer: function() {
             $.ajax({
@@ -96,12 +72,12 @@
                 <div className="commentBox">
                  <h1>Departments</h1>
                    <CommentList data={this.state.data} />
-                   <CommentForm onCommentSubmit= {this.handleCommentSubmit} />
                 </div>
               );
             }
           });
           
+          //Used to test onClick event to change text (could be used to display classes)
           var ClassList = React.createClass({
             getInitialState: function() {
               return {clicked: false};
@@ -128,7 +104,7 @@
                   <h2 className="sectionDepartment">
                     {this.props.department}
                   </h2>
-                  <span dangerouslySetInnerHTML={{__html: rawMarkup}} />
+                  <span dangerouslySetInnerHTML={{__html: rawMarkup}} /> 
                   
                   <ClassList />
                 </div>
@@ -138,7 +114,7 @@
 
           
           React.render(
-            <CommentBox url="allclasses.json" pollInterval={20000}></CommentBox>,
+            <CommentBox url="allclasses.json"></CommentBox>,
             document.getElementById('testapp')
             );
 

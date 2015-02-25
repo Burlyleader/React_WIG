@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head></head>
+
+<body>
+<script>
+var computersJSON = [
+	{"name":"Lenovo Thinkpad 41A4298","website":"google"},
+	{"name":"Lenovo Thinkpad 41A2222","website":"google"},
+	{"name":"Lenovo Thinkpad 41Awww33","website":"yahoo"},
+	{"name":"Lenovo Thinkpad 41A424448","website":"google"},
+	{"name":"Lenovo Thinkpad 41A429rr8","website":"ebay"},
+	{"name":"Lenovo Thinkpad 41A429ff8","website":"ebay"},
+	{"name":"Lenovo Thinkpad 41A429ss8","website":"rediff"},
+	{"name":"Lenovo Thinkpad 41A429sg8","website":"yahoo"}
+];
+
+
+function filterComputers(website){
+	filteredArray = computersJSON.filter(function(entry) {
+		if (entry.website === website) {
+			return entry.name;
+		}
+	});
+	console.log(filteredArray);
+}
+
+filterComputers('google');
+
+
+</script>
+</body>
+</html>
